@@ -1,6 +1,6 @@
 package com.meda.titu.medicalclinicapplication.annotation;
 
-import com.meda.titu.medicalclinicapplication.annotation.validator.RoPhoneNoValidator;
+import com.meda.titu.medicalclinicapplication.annotation.validator.UniquePhoneNoValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -11,10 +11,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = RoPhoneNoValidator.class)
-public @interface RoPhoneNo {
-
-    String message() default "phone number must be romanian";
+@Constraint(validatedBy = UniquePhoneNoValidator.class)
+public @interface UniquePhoneNo {
+    String message() default "phone number must be unique";
 
     Class<?>[] groups() default {};
 

@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateCTInterpretationRequest {
+public class DiagnoseCTInterpretationRequest {
     @NotNull
     @Positive
     private long userId;
     @NotBlank
-    private String description;
+    private String finalDiagnosis;
     @NotBlank
-    private String interpretation;
+    private String observations;
 }

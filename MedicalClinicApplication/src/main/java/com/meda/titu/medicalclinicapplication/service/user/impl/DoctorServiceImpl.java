@@ -7,27 +7,32 @@ import com.meda.titu.medicalclinicapplication.exception.NotFoundException;
 import com.meda.titu.medicalclinicapplication.mapper.user.DoctorMapper;
 import com.meda.titu.medicalclinicapplication.repository.user.DoctorRepository;
 import com.meda.titu.medicalclinicapplication.service.user.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.meda.titu.medicalclinicapplication.util.UserEntityUpdater;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service(value = "DoctorService")
+@AllArgsConstructor
 public class DoctorServiceImpl implements UserService {
     private final DoctorRepository doctorRepository;
     private final DoctorMapper doctorMapper;
-    private final PasswordEncoder passwordEncoder;
-
-    public DoctorServiceImpl(DoctorRepository doctorRepository, DoctorMapper doctorMapper, PasswordEncoder passwordEncoder) {
-        this.doctorRepository = doctorRepository;
-        this.doctorMapper = doctorMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final UserEntityUpdater userEntityUpdater;
 
     @Override
     public UserResponse save(UserRequest doctorRequest) {
         Doctor doctor = doctorMapper.userRequestToDoctor(doctorRequest);
-        doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
+        userEntityUpdater.updatePassword(doctor, doctorRequest.getPassword());
+        return doctorMapper.doctorToUserResponse(doctorRepository.save(doctor));
+    }
+
+    @Override
+    public UserResponse update(long id, UserRequest doctorRequest) {
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Doctor with id " + id +
+                        " could not be found!"));
+        userEntityUpdater.updateUserEntity(doctor, doctorRequest);
         return doctorMapper.doctorToUserResponse(doctorRepository.save(doctor));
     }
 

@@ -30,6 +30,14 @@ public class AdminControllerImpl implements UserController {
     }
 
     @Override
+    public ResponseEntity<UserResponse> update(long id, UserRequest adminRequest) {
+        return new ResponseEntity<>(
+                adminService.update(id, adminRequest),
+                HttpStatus.OK
+        );
+    }
+
+    @Override
     public ResponseEntity<UserResponse> findById(long id) {
         return new ResponseEntity<>(
                 adminService.findById(id),

@@ -7,27 +7,32 @@ import com.meda.titu.medicalclinicapplication.exception.NotFoundException;
 import com.meda.titu.medicalclinicapplication.mapper.user.AdminMapper;
 import com.meda.titu.medicalclinicapplication.repository.user.AdminRepository;
 import com.meda.titu.medicalclinicapplication.service.user.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.meda.titu.medicalclinicapplication.util.UserEntityUpdater;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service(value = "AdminService")
+@AllArgsConstructor
 public class AdminServiceImpl implements UserService {
     private final AdminRepository adminRepository;
     private final AdminMapper adminMapper;
-    private final PasswordEncoder passwordEncoder;
-
-    public AdminServiceImpl(AdminRepository adminRepository, AdminMapper adminMapper, PasswordEncoder passwordEncoder) {
-        this.adminRepository = adminRepository;
-        this.adminMapper = adminMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final UserEntityUpdater userEntityUpdater;
 
     @Override
     public UserResponse save(UserRequest adminRequest) {
         Admin admin = adminMapper.userRequestToAdmin(adminRequest);
-        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        userEntityUpdater.updatePassword(admin, adminRequest.getPassword());
+        return adminMapper.adminToUserResponse(adminRepository.save(admin));
+    }
+
+    @Override
+    public UserResponse update(long id, UserRequest adminRequest) {
+        Admin admin = adminRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Admin with id " + id +
+                        " could not be found!"));
+        userEntityUpdater.updateUserEntity(admin, adminRequest);
         return adminMapper.adminToUserResponse(adminRepository.save(admin));
     }
 

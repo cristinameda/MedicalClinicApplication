@@ -7,27 +7,32 @@ import com.meda.titu.medicalclinicapplication.exception.NotFoundException;
 import com.meda.titu.medicalclinicapplication.mapper.user.RadiologistMapper;
 import com.meda.titu.medicalclinicapplication.repository.user.RadiologistRepository;
 import com.meda.titu.medicalclinicapplication.service.user.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.meda.titu.medicalclinicapplication.util.UserEntityUpdater;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service(value = "RadiologistService")
+@AllArgsConstructor
 public class RadiologistServiceImpl implements UserService {
     private final RadiologistRepository radiologistRepository;
     private final RadiologistMapper radiologistMapper;
-    private final PasswordEncoder passwordEncoder;
-
-    public RadiologistServiceImpl(RadiologistRepository radiologistRepository, RadiologistMapper radiologistMapper, PasswordEncoder passwordEncoder) {
-        this.radiologistRepository = radiologistRepository;
-        this.radiologistMapper = radiologistMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final UserEntityUpdater userEntityUpdater;
 
     @Override
     public UserResponse save(UserRequest radiologistRequest) {
         Radiologist radiologist = radiologistMapper.userRequestToRadiologist(radiologistRequest);
-        radiologist.setPassword(passwordEncoder.encode(radiologist.getPassword()));
+        userEntityUpdater.updatePassword(radiologist, radiologistRequest.getPassword());
+        return radiologistMapper.radiologistToUserResponse(radiologistRepository.save(radiologist));
+    }
+
+    @Override
+    public UserResponse update(long id, UserRequest radiologistRequest) {
+        Radiologist radiologist = radiologistRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Radiologist with id " + id +
+                        " could not be found!"));
+        userEntityUpdater.updateUserEntity(radiologist, radiologistRequest);
         return radiologistMapper.radiologistToUserResponse(radiologistRepository.save(radiologist));
     }
 

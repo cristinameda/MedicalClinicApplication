@@ -14,9 +14,11 @@ public interface RadiologistMapper {
     @Mapping(target = "id", ignore = true)
     Radiologist userRequestToRadiologist(UserRequest userRequest);
 
-    UserResponse radiologistToUserResponse(Radiologist radiologist);
     @Mapping(target = "interpretations", ignore = true)
+    @Mapping(target = "password", ignore = true)
     Radiologist userResponseToRadiologist(UserResponse userResponse);
+
+    UserResponse radiologistToUserResponse(Radiologist radiologist);
 
     List<UserResponse> radiologistsToUserResponses(List<Radiologist> radiologist);
 }

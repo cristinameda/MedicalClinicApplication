@@ -30,6 +30,14 @@ public class RadiologistControllerImpl implements UserController {
     }
 
     @Override
+    public ResponseEntity<UserResponse> update(long id, UserRequest radiologistRequest) {
+        return new ResponseEntity<>(
+                radiologistService.update(id, radiologistRequest),
+                HttpStatus.OK
+        );
+    }
+
+    @Override
     public ResponseEntity<UserResponse> findById(long id) {
         return new ResponseEntity<>(
                 radiologistService.findById(id),

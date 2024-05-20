@@ -14,9 +14,11 @@ public interface DoctorMapper {
     @Mapping(target = "id", ignore = true)
     Doctor userRequestToDoctor(UserRequest userRequest);
 
-    UserResponse doctorToUserResponse(Doctor doctor);
     @Mapping(target = "interpretations", ignore = true)
+    @Mapping(target = "password", ignore = true)
     Doctor userResponseToDoctor(UserResponse userResponse);
+
+    UserResponse doctorToUserResponse(Doctor doctor);
 
     List<UserResponse> doctorsToUserResponses(List<Doctor> doctors);
 }

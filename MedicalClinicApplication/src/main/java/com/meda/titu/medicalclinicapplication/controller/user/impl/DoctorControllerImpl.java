@@ -30,6 +30,14 @@ public class DoctorControllerImpl implements UserController {
     }
 
     @Override
+    public ResponseEntity<UserResponse> update(long id, UserRequest doctorRequest) {
+        return new ResponseEntity<>(
+                doctorService.update(id, doctorRequest),
+                HttpStatus.OK
+        );
+    }
+
+    @Override
     public ResponseEntity<UserResponse> findById(long id) {
         return new ResponseEntity<>(
                 doctorService.findById(id),

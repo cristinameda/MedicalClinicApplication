@@ -29,4 +29,8 @@ public enum InterpretationStatus {
     public String getValue() {
         return value;
     }
+
+    public boolean hasNext(InterpretationStatus newStatus) {
+        return this.ordinal() + 1 == newStatus.ordinal();
+    }
 }

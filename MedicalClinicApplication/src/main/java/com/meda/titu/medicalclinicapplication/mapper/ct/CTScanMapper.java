@@ -16,8 +16,5 @@ public interface CTScanMapper {
 
     CTScanResponse ctScanToCTScanResponse(CTScan ctScan);
 
-    @Mapping(target = "ctInterpretation", ignore = true)
-    CTScan ctScanResponseToCTScan(CTScanResponse ctScanResponse);
-
     List<CTScanResponse> ctScansToCTScanResponses(List<CTScan> ctScans);
 }

@@ -122,23 +122,11 @@
             <artifactId>jackson-datatype-jdk8</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>${swagger-annotations.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>2.2.2</version>
-            <scope>compile</scope>
-        </dependency>
-
+        <!--	Swagger	-->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${swagger-annotations.version}</version>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
         </dependency>
 
         <dependency>
@@ -190,5 +178,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -8,6 +8,8 @@ import java.util.List;
 public interface UserService {
     UserResponse save(UserRequest userRequest);
 
+    UserResponse update(long id, UserRequest userRequest);
+
     UserResponse findById(long id);
 
     UserResponse findByUsername(String username);

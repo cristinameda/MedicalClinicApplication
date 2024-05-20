@@ -21,15 +21,24 @@ public class SecurityConfig {
     private final AppConfig appConfig;
     private final JwtAuthenticationFilter jwtAuthFilter;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(appConfig.corsConfigurationSource()))
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/auth/**").permitAll();
+                    request.requestMatchers("/swagger-ui/**").permitAll();
+                    request.requestMatchers("/swagger-ui.html").permitAll();
+                    request.requestMatchers("/v3/api-docs/**").permitAll();
                     request.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     request.requestMatchers("/admins/**", "/doctors/**", "/radiologists/**", "/doctors/**").hasAnyAuthority("ROLE_ADMIN");
+                    request.requestMatchers(HttpMethod.POST, "/ct-interpretations").hasAnyAuthority("ROLE_RADIOLOGIST");
+                    request.requestMatchers(HttpMethod.PUT, "/ct-interpretations/update/id/{id}").hasAnyAuthority("ROLE_RADIOLOGIST");
+                    request.requestMatchers(HttpMethod.PUT, "/ct-interpretations/diagnose/id/{id}").hasAnyAuthority("ROLE_DOCTOR");
+                    request.requestMatchers(HttpMethod.PUT, "/ct-interpretations/id/{id}/status/{status}").hasAnyAuthority("ROLE_RADIOLOGIST", "ROLE_DOCTOR");
+                    request.requestMatchers(HttpMethod.GET, "/ct-interpretations/status/diagnosed/patient/{id}").hasAnyAuthority("ROLE_PATIENT", "ROLE_RADIOLOGIST", "ROLE_DOCTOR", "ROLE_ADMIN");
+                    request.requestMatchers(HttpMethod.GET, "/ct-interpretations/**").hasAnyAuthority("ROLE_RADIOLOGIST", "ROLE_DOCTOR", "ROLE_ADMIN");
+                    request.requestMatchers(HttpMethod.DELETE, "/ct-interpretations").hasAnyAuthority("ROLE_RADIOLOGIST", "ROLE_DOCTOR");
                     request.anyRequest().authenticated();
                 })
                 .authenticationProvider(appConfig.authenticationProvider())

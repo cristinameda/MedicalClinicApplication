@@ -1,6 +1,6 @@
 package com.meda.titu.medicalclinicapplication.annotation;
 
-import com.meda.titu.medicalclinicapplication.annotation.validator.RoPhoneNoValidator;
+import com.meda.titu.medicalclinicapplication.annotation.validator.UsernameValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -11,10 +11,10 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = RoPhoneNoValidator.class)
-public @interface RoPhoneNo {
+@Constraint(validatedBy = UsernameValidator.class)
+public @interface Username {
 
-    String message() default "phone number must be romanian";
+    String message() default "username must contain only letters and digits and be at least 4 and at most 20 characters long";
 
     Class<?>[] groups() default {};
 

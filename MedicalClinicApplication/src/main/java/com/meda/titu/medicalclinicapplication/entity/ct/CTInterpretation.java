@@ -42,10 +42,10 @@ public class CTInterpretation {
     @JoinColumn(name = "ct_scan_id", unique = true)
     @MapsId
     private CTScan ctScan;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id")
     private Patient patient;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
     @Column(nullable = false)
@@ -54,7 +54,7 @@ public class CTInterpretation {
     private String prediction;
     @Column(name = "initial_interpretation", nullable = false)
     private String interpretation;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "radiologist_id")
     private Radiologist madeBy;
     @CreatedDate

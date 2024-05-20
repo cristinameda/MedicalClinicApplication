@@ -1,88 +1,91 @@
 package com.meda.titu.medicalclinicapplication.controller.user;
 
+import com.meda.titu.medicalclinicapplication.annotation.group.CreateEntityGroup;
+import com.meda.titu.medicalclinicapplication.annotation.group.UpdateEntityGroup;
 import com.meda.titu.medicalclinicapplication.dto.request.user.UserRequest;
 import com.meda.titu.medicalclinicapplication.dto.response.UserResponse;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import jakarta.validation.Valid;
-import org.springframework.http.MediaType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
 public interface UserController {
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiOperation(value = "Save a new user.",
-            response = UserResponse.class,
-            notes = "Return the created user.")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "User successfully created!"),
-            @ApiResponse(code = 400, message = "Bad request!")
-    })
-    ResponseEntity<UserResponse> save(@Valid @RequestBody UserRequest userRequest);
 
-
-    @GetMapping(
-            path = "/id/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiOperation(value = "Find user by id.",
-            response = UserResponse.class,
-            notes = "Return the user with the given id if found.")
+    @Operation(summary = "Save a new user.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User found!"),
-            @ApiResponse(code = 404, message = "User not found!")
+            @ApiResponse(responseCode = "201", description = "User successfully created!", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "Bad request!")
     })
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    ResponseEntity<UserResponse> save(@Validated(value = CreateEntityGroup.class) @RequestBody UserRequest userRequest);
+
+    @Operation(summary = "Update an existing user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User successfully updated!", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "Bad request!"),
+            @ApiResponse(responseCode = "404", description = "User not found!")
+    })
+    @PutMapping("/id/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<UserResponse> update(@PathVariable long id, @Validated(value = UpdateEntityGroup.class) @RequestBody UserRequest userRequest);
+
+    @Operation(summary = "Find user by id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found!"),
+            @ApiResponse(responseCode = "400", description = "Invalid user id supplied!"),
+            @ApiResponse(responseCode = "404", description = "User not found!")
+    })
+    @GetMapping(path = "/id/{id}")
+    @ResponseStatus(HttpStatus.OK)
     ResponseEntity<UserResponse> findById(@PathVariable long id);
 
-    @GetMapping(
-            path = "/username/{username}",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiOperation(value = "Find user by username.",
-            response = UserResponse.class,
-            notes = "Return the user with the given username if found.")
+    @Operation(summary = "Find user by username.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User found!"),
-            @ApiResponse(code = 404, message = "User not found!")
+            @ApiResponse(responseCode = "200", description = "User found!"),
+            @ApiResponse(responseCode = "400", description = "Invalid user username supplied!"), //TODO: catch constraint exception and return code 400 with this message; same in interpretation controller
+            @ApiResponse(responseCode = "404", description = "User not found!")
     })
+    @GetMapping(path = "/username/{username}")
+    @ResponseStatus(HttpStatus.OK)
     ResponseEntity<UserResponse> findByUsername(@PathVariable String username);
 
-    @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiOperation(value = "Find all users.",
-            notes = "Return all the saved users.")
+    @Operation(summary = "Find all users.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Users returned!")
+            @ApiResponse(responseCode = "200", description = "Users returned!")
     })
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
     ResponseEntity<List<UserResponse>> findAll();
 
-    @GetMapping(
-            path = "/fullName/{word}",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiOperation(value = "Find all users with their full name containing a specific word.",
-            notes = "Return all the users that verify the constraint.")
+    @Operation(summary = "Find all users with their full name containing a specific word.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Users returned!")
+            @ApiResponse(responseCode = "200", description = "Users returned!"),
+            @ApiResponse(responseCode = "400", description = "Invalid word supplied!")
     })
+    @GetMapping(path = "/fullName/{word}")
+    @ResponseStatus(HttpStatus.OK)
     ResponseEntity<List<UserResponse>> findAllWithFullNameContaining(@PathVariable String word);
 
-    @DeleteMapping(path = "/id/{id}")
-    @ApiOperation(value = "Delete an existing user by id.")
+    @Operation(summary = "Delete an existing user by id.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User successfully deleted!"),
-            @ApiResponse(code = 404, message = "User not found!")
+            @ApiResponse(responseCode = "200", description = "User successfully deleted!"),
+            @ApiResponse(responseCode = "400", description = "Invalid user id supplied!"),
+            @ApiResponse(responseCode = "404", description = "User not found!")
     })
+    @DeleteMapping(path = "/id/{id}")
+    @ResponseStatus(HttpStatus.OK)
     ResponseEntity<Void> deleteById(@PathVariable long id);
 }
